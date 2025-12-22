@@ -11,3 +11,8 @@ if [ ! -f "$GIG" ]; then
   cat "$SCRIPT_DIR/.gitignore_global" > "$GIG"
 fi
 
+# Install Brewfile if brew is installed
+if command -v brew &> /dev/null; then
+  echo "Installing packages from Brewfile..."
+  brew bundle install --file="$SCRIPT_DIR/Brewfile"
+fi
