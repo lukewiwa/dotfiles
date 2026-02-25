@@ -83,14 +83,6 @@ link_file() {
 link_file ".gitconfig"
 link_file ".gitignore_global" ".config/git/ignore"
 link_file ".config/lazygit/config.yml" ".config/lazygit/config.yml"
-link_file ".zsh_aliases"
-
-# Install Brewfile on macOS
-if [ "$OS_NAME" = "macOS" ] && command -v brew &> /dev/null; then
-    echo "Installing Homebrew packages..."
-    brew bundle install --file="${SCRIPT_DIR}/Brewfile"
-fi
-
 # Setup zsh integration
 setup_shell() {
     local shell_rc="${HOME}/.zshrc"
