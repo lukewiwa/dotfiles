@@ -1,24 +1,120 @@
-
-#!/usr/bin/env bash
+#!/bin/bash
 set -e
 
 SCRIPT_DIR="$(cd "$(dirname "$0")" && pwd)"
 
-# Link global gitignore
-GIG="$HOME/.config/git/ignore"
-if [ -f "$SCRIPT_DIR/.gitignore_global" ]; then
-  mkdir -p "$(dirname "$GIG")"
-  ln -sf "$SCRIPT_DIR/.gitignore_global" "$GIG"
+echo "Installing dotfiles..."
+
+# Detect OS
+OS="$(uname -s)"
+case "$OS" in
+    Darwin*)
+        OS_NAME="macOS"
+        ;;
+    Linux*)
+        OS_NAME="Linux"
+        ;;
+    *)
+        OS_NAME="Unknown"
+        ;;
+esac
+echo "Detected OS: $OS_NAME"
+
+# Install mise if not present
+if ! command -v mise &> /dev/null; then
+    echo "mise not found, installing..."
+    echo "Installing mise via official installer..."
+    curl https://mise.run | sh
+
+    # Add mise to PATH for current session
+    export PATH="${HOME}/.local/bin:${PATH}"
+
+    # Verify installation
+    if ! command -v mise &> /dev/null; then
+        echo "ERROR: mise installation failed"
+        exit 1
+    fi
+    echo "mise installed successfully"
+else
+    echo "mise already installed"
 fi
 
-# Install Brewfile if brew is installed
-if command -v brew &> /dev/null; then
-  echo "Installing packages from Brewfile..."
-  brew bundle install --file="$SCRIPT_DIR/Brewfile"
+# Link global mise config
+echo "Linking mise config..."
+MISE_CONFIG="${HOME}/.config/mise/config.toml"
+mkdir -p "$(dirname "$MISE_CONFIG")"
+ln -sf "${SCRIPT_DIR}/.config/mise/config.toml" "$MISE_CONFIG"
+echo "  Linked: $MISE_CONFIG"
+
+# Trust mise config file (suppress warning if already trusted)
+echo "Trusting mise config..."
+mise trust 2>&1 | grep -v "No untrusted config files found" || true
+
+# Install tools from global mise config
+echo "Installing tools via mise..."
+mise install --yes
+# Activate for current shell session
+eval "$(mise activate bash)"
+
+# Install just completions
+echo "Installing just completions..."
+if command -v just &> /dev/null; then
+    mkdir -p "${HOME}/.oh-my-zsh/completions"
+    just --completions zsh > "${HOME}/.oh-my-zsh/completions/_just"
+    echo "  Installed just completions"
+else
+    echo "  just not found, skipping completions"
 fi
-# Link zsh aliases to home directory
-if [ -f "$SCRIPT_DIR/.zsh_aliases" ]; then
-  echo "Linking .zsh_aliases to ~/.zsh_aliases..."
-  ln -sf "$SCRIPT_DIR/.zsh_aliases" "$HOME/.zsh_aliases"
-  echo "Add 'source ~/.zsh_aliases' to your ~/.zshrc if not already present"
+
+# Symlink dotfiles
+echo "Linking dotfiles..."
+
+link_file() {
+    local src="${SCRIPT_DIR}/${1}"
+    local dest="${HOME}/${2:-$1}"
+
+    if [ -f "$src" ]; then
+        mkdir -p "$(dirname "$dest")"
+        ln -sf "$src" "$dest"
+        echo "  Linked: $dest"
+    fi
+}
+
+link_file ".gitconfig"
+link_file ".gitignore_global" ".config/git/ignore"
+link_file ".config/lazygit/config.yml" ".config/lazygit/config.yml"
+link_file ".zsh_aliases"
+
+# Install Brewfile on macOS
+if [ "$OS_NAME" = "macOS" ] && command -v brew &> /dev/null; then
+    echo "Installing Homebrew packages..."
+    brew bundle install --file="${SCRIPT_DIR}/Brewfile"
 fi
+
+# Setup zsh integration
+setup_shell() {
+    local shell_rc="${HOME}/.zshrc"
+    local marker="# dotfiles-setup"
+
+    # Skip if already configured
+    if grep -q "$marker" "$shell_rc" 2>/dev/null; then
+        echo "Shell already configured"
+        return
+    fi
+
+    echo "Configuring zsh..."
+    cat >> "$shell_rc" << EOF
+
+# dotfiles-setup
+export PATH="\${HOME}/.local/bin:\${PATH}"
+
+# mise (provides tools, aliases, and environment)
+eval "\$(mise activate zsh)"
+EOF
+    echo "  Updated: $shell_rc"
+}
+
+setup_shell
+
+echo "Done! Tools installed:"
+mise list
