@@ -62,6 +62,8 @@ if command -v just &> /dev/null; then
     mkdir -p "${HOME}/.oh-my-zsh/completions"
     just --completions zsh > "${HOME}/.oh-my-zsh/completions/_just"
     echo "  Installed just completions"
+    cp "${SCRIPT_DIR}/.config/zsh/completions/_wust" "${HOME}/.oh-my-zsh/completions/_wust"
+    echo "  Installed wust completions"
 else
     echo "  just not found, skipping completions"
 fi
@@ -83,15 +85,15 @@ link_file() {
 link_file ".gitconfig"
 link_file ".gitignore_global" ".config/git/ignore"
 link_file ".config/lazygit/config.yml" ".config/lazygit/config.yml"
+link_file ".config/just/justfile" ".config/just/justfile"
 # Setup zsh integration
 setup_shell() {
     local shell_rc="${HOME}/.zshrc"
     local marker="# dotfiles-setup"
 
-    # Skip if already configured
+    # Remove existing dotfiles block if present
     if grep -q "$marker" "$shell_rc" 2>/dev/null; then
-        echo "Shell already configured"
-        return
+        sed -i.bak "/$marker/,/^# end dotfiles-setup$/d" "$shell_rc"
     fi
 
     echo "Configuring zsh..."
@@ -102,6 +104,11 @@ export PATH="\${HOME}/.local/bin:\${PATH}"
 
 # mise (provides tools, aliases, and environment)
 eval "\$(mise activate zsh)"
+
+# wust (global justfile) completions
+setopt COMPLETE_ALIASES
+compdef _wust wust
+# end dotfiles-setup
 EOF
     echo "  Updated: $shell_rc"
 }

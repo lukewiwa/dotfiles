@@ -1,0 +1,4 @@
+# Global justfile - invoke with `wust` (just -g) from any directory
+
+wiwa:
+    @echo "wiwa!"

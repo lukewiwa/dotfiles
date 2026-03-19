@@ -67,17 +67,3 @@ myalias = "your-command here"
 The `github` backend works with any tool that publishes binaries to GitHub releases. For tools not on GitHub, mise also supports `aqua` and `cargo` backends.
 
 Shell aliases are automatically activated by `mise activate zsh` and support all shell syntax.
-
-## How it works
-
-The install script:
-1. Detects your operating system (macOS or Linux)
-2. Installs mise if not already present (via the official installer)
-3. Symlinks `.config/mise/config.toml` to `~/.config/mise/config.toml` as your **global mise config**
-4. Installs all tools defined in the config
-5. Activates shell aliases defined in the mise config
-6. Symlinks dotfiles (`.gitconfig`, `.gitignore_global`, lazygit config, `.zsh_aliases`) to your home directory
-7. Configures zsh integration with `mise activate`
-8. Installs Homebrew packages from `Brewfile` on macOS (if brew is available)
-
-Your tools are available globally in all projects and directories, not just in specific project directories.

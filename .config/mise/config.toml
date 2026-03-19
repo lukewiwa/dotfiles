@@ -31,3 +31,6 @@ mdless = "glow"
 nvimcfg = "nvim ~/.config/nvim"
 zshcfg = "nvim ~/.zshrc"
 misecfg = "nvim ~/.config/mise/config.toml"
+
+# Global justfile
+wust = "just --global-justfile"
