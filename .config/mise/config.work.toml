@@ -2,4 +2,4 @@
 # See install.sh for how MISE_ENV is set from ~/.machine_profile
 
 [tools]
-ffmpeg = "latest"
+"asdf:mise-plugins/mise-ffmpeg" = "8.1"

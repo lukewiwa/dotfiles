@@ -12,6 +12,7 @@ jobs:
     runs-on: ubuntu-latest
     env:
       REMOTE_CONTAINERS: "true"
+      GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
     steps:
       - uses: actions/checkout@v6
 
@@ -54,6 +55,8 @@ jobs:
   test-work-linux:
     name: Work machine (Linux)
     runs-on: ubuntu-latest
+    env:
+      GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
     steps:
       - uses: actions/checkout@v6
 
@@ -87,6 +90,8 @@ jobs:
   test-work-macos:
     name: Work machine (macOS)
     runs-on: macos-latest
+    env:
+      GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
     steps:
       - uses: actions/checkout@v6
 
