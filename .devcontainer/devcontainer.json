@@ -1,5 +1,5 @@
 {
-    "name": "Dev Container Dotfiles",
+    "name": "Dotfiles",
     "image": "mcr.microsoft.com/devcontainers/base:debian",
     "customizations": {
         "vscode": {

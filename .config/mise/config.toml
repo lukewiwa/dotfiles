@@ -1,5 +1,6 @@
 [tools]
 bat = "latest"
+"core:neovim" = "latest"
 delta = "latest"
 fzf = "latest"
 glow = "latest"
@@ -7,7 +8,6 @@ jq = "latest"
 just = "latest"
 lazydocker = "latest"
 lazygit = "latest"
-"core:neovim" = "latest"
 
 [shell_alias]
 # Neovim

@@ -3,10 +3,6 @@
 wiwa:
     @echo "wiwa!"
 
-# Set git user identity for this repo (stored in .git/config, not committed)
-git-identity:
-    #!/usr/bin/env bash
-    read -p "Name: " name
-    read -p "Email: " email
-    git config user.name "$name"
-    git config user.email "$email"
+# Compress video with sane defaults for quick sharing
+compressv input output:
+    ffmpeg -i "{{input}}" -c:v libx264 -preset veryfast -r 30 -vf "pad=ceil(iw/2)*2:ceil(ih/2)*2" -c:a copy "{{output}}"
