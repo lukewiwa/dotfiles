@@ -1,0 +1,5 @@
+# Work machine tools — loaded automatically when MISE_ENV=work
+# See install.sh for how MISE_ENV is set from ~/.machine_profile
+
+[tools]
+ffmpeg = "latest"

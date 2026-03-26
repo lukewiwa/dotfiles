@@ -41,14 +41,24 @@ fi
 
 # Link global mise config
 echo "Linking mise config..."
-MISE_CONFIG="${HOME}/.config/mise/config.toml"
-mkdir -p "$(dirname "$MISE_CONFIG")"
-ln -sf "${SCRIPT_DIR}/.config/mise/config.toml" "$MISE_CONFIG"
-echo "  Linked: $MISE_CONFIG"
+MISE_CONFIG_DIR="${HOME}/.config/mise"
+mkdir -p "$MISE_CONFIG_DIR"
+ln -sf "${SCRIPT_DIR}/.config/mise/config.toml" "${MISE_CONFIG_DIR}/config.toml"
+echo "  Linked: ${MISE_CONFIG_DIR}/config.toml"
+ln -sf "${SCRIPT_DIR}/.config/mise/config.work.toml" "${MISE_CONFIG_DIR}/config.work.toml"
+echo "  Linked: ${MISE_CONFIG_DIR}/config.work.toml"
+ln -sf "${SCRIPT_DIR}/.config/mise/mise.lock" "${MISE_CONFIG_DIR}/mise.lock"
+echo "  Linked: ${MISE_CONFIG_DIR}/mise.lock"
+ln -sf "${SCRIPT_DIR}/.config/mise/mise.work.lock" "${MISE_CONFIG_DIR}/mise.work.lock"
+echo "  Linked: ${MISE_CONFIG_DIR}/mise.work.lock"
 
-# Trust mise config file (suppress warning if already trusted)
-echo "Trusting mise config..."
-mise trust 2>&1 | grep -v "No untrusted config files found" || true
+# Set mise env — work tools are enabled unless running inside a dev container
+if [ "${REMOTE_CONTAINERS:-}" = "true" ]; then
+    echo "Dev container detected, skipping work profile"
+else
+    echo "Work machine detected, enabling work profile"
+    export MISE_ENV="work"
+fi
 
 # Install tools from global mise config
 echo "Installing tools via mise..."
@@ -101,6 +111,11 @@ setup_shell() {
 
 # dotfiles-setup
 export PATH="\${HOME}/.local/bin:\${PATH}"
+
+# Machine profile — work tools enabled unless inside a dev container
+if [ "\${REMOTE_CONTAINERS:-}" != "true" ]; then
+    export MISE_ENV="work"
+fi
 
 # mise (provides tools, aliases, and environment)
 eval "\$(mise activate zsh)"
