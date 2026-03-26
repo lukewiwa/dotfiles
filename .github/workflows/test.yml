@@ -34,8 +34,7 @@ jobs:
       - name: Assert ffmpeg not installed
         run: |
           export PATH="${HOME}/.local/bin:${PATH}"
-          eval "$(~/.local/bin/mise activate bash)"
-          if command -v ffmpeg &>/dev/null; then
+          if mise which ffmpeg &>/dev/null; then
             echo "FAIL: ffmpeg should not be installed in dev container"
             exit 1
           fi
@@ -78,12 +77,12 @@ jobs:
       - name: Assert ffmpeg installed
         run: |
           export PATH="${HOME}/.local/bin:${PATH}"
-          eval "$(~/.local/bin/mise activate bash)"
-          if ! command -v ffmpeg &>/dev/null; then
+          if ! mise which ffmpeg &>/dev/null; then
             echo "FAIL: ffmpeg should be installed on work machine"
+            mise ls
             exit 1
           fi
-          echo "OK: ffmpeg $(ffmpeg -version 2>&1 | head -1)"
+          echo "OK: ffmpeg $(mise exec -- ffmpeg -version 2>&1 | head -1)"
 
   # Simulates a work macOS machine (no REMOTE_CONTAINERS)
   # Expected: base tools + ffmpeg
@@ -113,9 +112,9 @@ jobs:
       - name: Assert ffmpeg installed
         run: |
           export PATH="${HOME}/.local/bin:${PATH}"
-          eval "$(~/.local/bin/mise activate bash)"
-          if ! command -v ffmpeg &>/dev/null; then
+          if ! mise which ffmpeg &>/dev/null; then
             echo "FAIL: ffmpeg should be installed on work machine"
+            mise ls
             exit 1
           fi
-          echo "OK: ffmpeg $(ffmpeg -version 2>&1 | head -1)"
+          echo "OK: ffmpeg $(mise exec -- ffmpeg -version 2>&1 | head -1)"
