@@ -96,6 +96,12 @@ link_file ".gitconfig"
 link_file ".gitignore_global" ".config/git/ignore"
 link_file ".config/lazygit/config.yml" ".config/lazygit/config.yml"
 link_file ".config/just/justfile" ".config/just/justfile"
+
+if [ -n "${CONTAINER_WORKSPACE_FOLDER:-}" ] && [ ! -f "${CONTAINER_WORKSPACE_FOLDER}/.justfile" ]; then
+    cp "${SCRIPT_DIR}/.config/just/workspace.justfile" "${CONTAINER_WORKSPACE_FOLDER}/.justfile"
+    echo "  Copied workspace.justfile to: ${CONTAINER_WORKSPACE_FOLDER}/.justfile"
+fi
+
 # Setup zsh integration
 setup_shell() {
     local shell_rc="${HOME}/.zshrc"
