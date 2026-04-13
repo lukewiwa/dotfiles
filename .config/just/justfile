@@ -1,7 +1,12 @@
 # Global justfile - invoke with `wust` (just -g) from any directory
 
+import "./local.justfile"
+
 wiwa:
     @echo "wiwa!"
+
+edit-local-justfile:
+    code "$HOME/.config/just/local.justfile"
 
 # Compress video with sane defaults for quick sharing
 compressv input output:
@@ -11,3 +16,6 @@ vpn:
     open /Applications/OpenVPN\ Connect.app
     op item get VPN --otp | pbcopy
     terminal-notifier -title "VPN" -message "OTP ready to paste"
+
+lock-screen:
+    open /System/Library/CoreServices/ScreenSaverEngine.app

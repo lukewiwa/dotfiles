@@ -38,4 +38,9 @@ hotkey.bind(mash, "N", function()
   if nexts then win:moveToScreen(nexts) end
 end)
 
+-- Open a new Terminal window
+hotkey.bind(mash, "T", function()
+  hs.execute([[osascript -e 'tell application "Terminal" to do script ""']])
+end)
+
 hs.alert.show("Hammerspoon: window hotkeys loaded")

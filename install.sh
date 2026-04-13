@@ -54,6 +54,17 @@ link_file ".config/lazygit/config.yml" ".config/lazygit/config.yml"
 link_file ".config/just/justfile" ".config/just/justfile"
 link_file "hammerspoon/init.lua" ".hammerspoon/init.lua"
 
+# Create local justfile for machine-specific and sensitive recipes
+LOCAL_JUSTFILE="${HOME}/.config/just/local.justfile"
+if [ -f "$LOCAL_JUSTFILE" ]; then
+    echo "Local justfile already present"
+else
+    mkdir -p "$(dirname "$LOCAL_JUSTFILE")"
+    : > "$LOCAL_JUSTFILE"
+    chmod 600 "$LOCAL_JUSTFILE"
+    echo "Created local justfile at ${LOCAL_JUSTFILE}"
+fi
+
 # Install just completions
 if command -v just &> /dev/null; then
     echo "Installing just completions..."
