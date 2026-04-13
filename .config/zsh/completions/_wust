@@ -2,8 +2,8 @@
 
 _wust() {
     local -a recipes
-    recipes=(${(s: :)$(just --global-justfile --summary 2>/dev/null)})
+    recipes=(${(f)$(just --global-justfile --summary 2>/dev/null)})
     compadd -a recipes
 }
 
-_wust "$@"
+compdef _wust wust

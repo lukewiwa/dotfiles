@@ -6,3 +6,8 @@ wiwa:
 # Compress video with sane defaults for quick sharing
 compressv input output:
     ffmpeg -i "{{input}}" -c:v libx264 -preset veryfast -r 30 -vf "pad=ceil(iw/2)*2:ceil(ih/2)*2" -c:a copy "{{output}}"
+
+vpn:
+    open /Applications/OpenVPN\ Connect.app
+    op item get VPN --otp | pbcopy
+    terminal-notifier -title "VPN" -message "OTP ready to paste"

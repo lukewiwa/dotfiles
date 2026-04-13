@@ -82,10 +82,9 @@ echo "Configuring zsh..."
 shell_rc="${HOME}/.zshrc"
 [ -f "$shell_rc" ] || touch "$shell_rc"
 grep -q "# dotfiles-setup" "$shell_rc" && sed -i.bak "/# dotfiles-setup/,/# end dotfiles-setup/d" "$shell_rc"
-cat >> "$shell_rc" << 'EOF'
-
+cat >> "$shell_rc" << EOF
 # dotfiles-setup
-[ -f "${HOME}/.dotfiles/.config/zsh/dotfiles.zsh" ] && source "${HOME}/.dotfiles/.config/zsh/dotfiles.zsh"
+source "${SCRIPT_DIR}/.config/zsh/dotfiles.zsh"
 # end dotfiles-setup
 EOF
 
