@@ -10,6 +10,7 @@ brew "lazydocker"
 brew "lazygit"
 brew "ffmpeg"
 brew "terminal-notifier"
+brew "awscli"
 
 cask "hammerspoon"
 cask "maccy"
